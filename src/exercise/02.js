@@ -26,7 +26,7 @@ function useSafeDispatch(dispatch) {
   }, [])
 
   return React.useCallback(
-    (...args) => (mountedRef.current ? dispatch(...args) : void 0),
+    (...args) => (mountedRef.current ? dispatch(...args) : void 0), // wrapper function.
     [dispatch],
   )
 }
@@ -60,17 +60,20 @@ const useAsync = initialState => {
 
   const {data, error, status} = state
 
-  const run = React.useCallback(promise => {
-    dispatch({type: 'pending'})
-    promise.then(
-      data => {
-        dispatch({type: 'resolved', data})
-      },
-      error => {
-        dispatch({type: 'rejected', error})
-      },
-    )
-  }, [dispatch])
+  const run = React.useCallback(
+    promise => {
+      dispatch({type: 'pending'})
+      promise.then(
+        data => {
+          dispatch({type: 'resolved', data})
+        },
+        error => {
+          dispatch({type: 'rejected', error})
+        },
+      )
+    },
+    [dispatch],
+  )
   return {
     error,
     status,
